@@ -1,0 +1,14 @@
+# dataset
+dataset_emociones/
+
+# modelos generados (ignorar por defecto)
+models/*
+
+# permitir subir el modelo final y sus clases
+!models/mejor_modelo_v2.keras
+!models/clases_v2.json
+
+# archivos temporales
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
