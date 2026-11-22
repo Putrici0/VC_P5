@@ -10,6 +10,8 @@ models/resnet18_reanudacion_1/*
 
 !models/resnet18_reanudacion_1/modelo_resnet18_final.pth
 !models/resnet18_reanudacion_1/clases.json
+!models/resnet18_reanudacion_1/graficas_entrenamiento.png
+!models/resnet18_reanudacion_1/matriz_confusion.png
 
 # archivos temporales
 __pycache__/
