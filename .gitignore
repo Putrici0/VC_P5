@@ -1,12 +1,15 @@
-# dataset
+# dataset de emociones
 dataset_emociones/
 
-# modelos generados (ignorar por defecto)
+# ignorar todos los modelos por defecto
 models/*
 
-# permitir subir el modelo final y sus clases
-!models/mejor_modelo_v2.keras
-!models/clases_v2.json
+# permitir subir el modelo final ResNet18
+!models/resnet18_reanudacion_1/
+models/resnet18_reanudacion_1/*
+
+!models/resnet18_reanudacion_1/modelo_resnet18_final.pth
+!models/resnet18_reanudacion_1/clases.json
 
 # archivos temporales
 __pycache__/
