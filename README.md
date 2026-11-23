@@ -177,23 +177,27 @@ El entrenamiento utiliza CUDA cuando está disponible, por lo que puede aprovech
 
 Una vez terminado el entrenamiento, recuperamos el mejor modelo guardado durante la validación y lo evaluamos con el conjunto de test, que no se ha utilizado para actualizar los pesos.
 
-Se generan el accuracy y la pérdida sobre test, un informe de clasificación con `precision`, `recall` y `F1-score` para cada expresión, y una matriz de confusión.
+Se generan métricas de evaluación, un informe de clasificación con `precision`, `recall` y `F1-score` para cada expresión, y una matriz de confusión. La exactitud obtenida sobre test es aproximadamente del **65,6 %**.
 
 #### Gráficas de entrenamiento
 
 ![Gráficas de entrenamiento](models/resnet18_reanudacion_1/graficas_entrenamiento.png)
 
-En la gráfica de la izquierda se representa el **accuracy** de entrenamiento y validación a lo largo de las épocas. Permite ver cómo mejora la capacidad de clasificación y comparar el rendimiento sobre las imágenes utilizadas para aprender con el obtenido sobre imágenes de validación.
+En la gráfica de la izquierda se representa el **accuracy** de entrenamiento y validación a lo largo de las épocas. Se observa que ambos mejoran inicialmente, pero sus resultados empiezan a separarse a medida que avanza el entrenamiento. Al final, el accuracy de entrenamiento alcanza aproximadamente el 73 %, mientras que el de validación se queda cerca del 68 %.
 
-En la gráfica de la derecha se representa la **pérdida (loss)** de ambos conjuntos. Lo interesante es comprobar que la pérdida disminuye y observar si las curvas de entrenamiento y validación se mantienen próximas. Una separación cada vez mayor podría indicar sobreajuste.
+En la gráfica de la derecha se representa la **pérdida (loss)** de ambos conjuntos. La pérdida de entrenamiento continúa disminuyendo, mientras que la de validación deja de mejorar claramente y se mantiene alrededor de 0,95. Esta diferencia entre ambas curvas indica que aparecen signos de **sobreajuste**: el modelo sigue aprendiendo las imágenes de entrenamiento, pero no consigue mejorar en la misma medida con imágenes que no ha utilizado para aprender.
 
 #### Matriz de confusión
 
 ![Matriz de confusión](models/resnet18_reanudacion_1/matriz_confusion.png)
 
-La matriz de confusión permite ver qué expresiones reconoce correctamente el modelo y cuáles tiende a confundir. La diagonal principal representa las predicciones correctas. Los valores que aparecen fuera de esa diagonal indican imágenes que pertenecían a una expresión, pero fueron clasificadas como otra.
+La matriz de confusión permite analizar qué expresiones reconoce correctamente el modelo y cuáles tiende a confundir. La diagonal principal representa las predicciones correctas, mientras que los valores fuera de ella indican clasificaciones equivocadas.
 
-Esto es útil para analizar cada clase por separado, ya que el accuracy global no muestra por sí solo qué expresiones son más difíciles de reconocer.
+Se observa que las expresiones **happy** y **surprised** son de las que mejor reconoce, con un 84,8 % y un 79,2 % de aciertos respectivamente. En cambio, **fearful** es la más difícil de identificar, con aproximadamente un 35,7 % de aciertos. Esta expresión se confunde especialmente con `sad`, `angry` y `neutral`.
+
+También destaca la confusión entre `sad` y `neutral`: 292 imágenes de la clase `sad` se clasificaron como `neutral`.
+
+En general, la matriz permite comprobar que el rendimiento no es igual para todas las expresiones y que algunas presentan más dificultades de clasificación que otras.
 
 ## Instalación y ejecución
 
