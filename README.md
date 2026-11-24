@@ -10,6 +10,12 @@ Los dos prototipos desarrollados son un filtro del Oeste y un sable láser que s
 - Pablo Llopis Parrilla (@Putrici0)
 - David González Espino (@002avid)
 
+-----
+Falta la guía de instalación
+
+- pip install -q kagglehub torch torchvision
+-----
+
 ## Tarea 1. Filtro del Oeste
 
 El primer prototipo consiste en un filtro inspirado en las películas del Oeste. Utilizamos MediaPipe para detectar la cara, las manos y el cuerpo, y así poder colocar los accesorios en la posición correspondiente.
