@@ -7,8 +7,8 @@ En esta práctica trabajamos con la detección y el análisis de caras, manos y 
 Los dos prototipos desarrollados son un filtro del Oeste y un sable láser que sigue el movimiento de la mano y cambia de color según la expresión facial detectada.
 
 ### Autores
-- Pablo Llopis Parrilla (@Putrici0)
-- David González Espino (@002avid)
+- [Pablo Llopis Parrilla](@Putrici0)
+- [David González Espino](@002avid)
 
 -----
 Falta la guía de instalación
