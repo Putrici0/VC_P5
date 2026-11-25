@@ -10,23 +10,17 @@ Los dos prototipos desarrollados son un filtro del Oeste y un sable láser que s
 - [Pablo Llopis Parrilla](@Putrici0)
 - [David González Espino](@002avid)
 
------
-Falta la guía de instalación
-
-- pip install -q kagglehub torch torchvision
------
-
 ## Tarea 1. Filtro del Oeste
 
 El primer prototipo consiste en un filtro inspirado en las películas del Oeste. Utilizamos MediaPipe para detectar la cara, las manos y el cuerpo, y así poder colocar los accesorios en la posición correspondiente.
 
+Los accesorios utilizados son un sombrero, una bandana y un puro. Se cargan como imágenes PNG y se superponen sobre la imagen de la cámara. Para colocarlos se calcula su tamaño en función de las dimensiones de la cara o de los hombros. También se tiene en cuenta la inclinación para que los accesorios acompañen el movimiento de la persona.
+
 Para ello se utilizan tres modelos de MediaPipe:
 
-- **Face Landmarker:** detecta los puntos de referencia de la cara. Se utiliza para calcular la posición, tamaño e inclinación del sombrero y para localizar la boca.
+- **Face Landmarker:** detecta los puntos de referencia de la cara. Se utiliza para calcular la posición, tamaño e inclinación del sombrero y para localizar la boca, para la colocación del puro.
 - **Pose Landmarker:** obtiene los puntos del cuerpo, principalmente los hombros. Con ellos calculamos la posición, anchura e inclinación de la bandana.
 - **Hand Landmarker:** detecta las manos y permite interactuar con el puro.
-
-Los accesorios utilizados son un sombrero, una bandana y un puro. Se cargan como imágenes PNG y se superponen sobre la imagen de la cámara. Para colocarlos se calcula su tamaño en función de las dimensiones de la cara o de los hombros. También se tiene en cuenta la inclinación para que los accesorios acompañen el movimiento de la persona.
 
 La superposición se realiza teniendo en cuenta el canal alfa de las imágenes, de forma que se conserva la transparencia. Además, se recorta el accesorio cuando parte de él queda fuera de los límites del fotograma.
 
@@ -215,7 +209,13 @@ Además, nuestro código necesita instalar algunas librerías adicionales:
 pip install torch torchvision kagglehub Pillow
 ```
 
-El notebook principal es `VC_P5.ipynb`. Sus celdas deben ejecutarse en orden. Los modelos de MediaPipe y ResNet18 necesarios se encuentran incluidos en el repositorio.
+Por otra parte, es importante destacar que por una incompatibilidad entre las librerías de mediapipe y tensorflow, fue necesaria la desinstalación de esta última mediante el siguiente comando:
+
+```bash
+pip uninstall tensorflow
+```
+
+El notebook principal es `VC_P5.ipynb`. Tras ejecutar la celda que contiene todos los imports, se puede ejecutar cualquiera de los filtros, aunque las celdas del entrenamiento se deben ejecutar en orden. Los modelos de MediaPipe y ResNet18 necesarios se encuentran incluidos en el repositorio.
 
 Los prototipos utilizan la cámara web. Para cerrar cada ejecución se pulsa `ESC`.
 
@@ -256,4 +256,4 @@ El dataset completo no se incluye en el repositorio. Se descarga desde Kaggle cu
 - [Pose Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker)
 - [PyTorch](https://pytorch.org/)
 - [TorchVision — ResNet18](https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.resnet18.html)
-- [ChatGPT](https://chatgpt.com/): utilizado para encontrar los landmarker de MediaPipe que se utilizaron, asistiendo al código. Además, de revisión de errores gramaticales y ortográficos en este documento.
+- [ChatGPT](https://chatgpt.com/): utilizado para optimizar el código. Además, se utilizó para la revisión de errores gramaticales y ortográficos en este documento.
