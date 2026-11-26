@@ -34,7 +34,7 @@ Los prototipos utilizan la cámara web. Para cerrar cada ejecución se pulsa `ES
 
 El primer prototipo consiste en un filtro inspirado en las películas del Oeste. Utilizamos MediaPipe para detectar la cara, las manos y el cuerpo, y así poder colocar los accesorios en la posición correspondiente.
 
-Los accesorios utilizados son un sombrero, una bandana y un puro. Se cargan como imágenes PNG y se superponen sobre la imagen de la cámara. Para colocarlos se calcula su tamaño en función de las dimensiones de la cara o de los hombros. También se tiene en cuenta la inclinación para que los accesorios acompañen el movimiento de la persona.
+Los accesorios utilizados son un sombrero, una bandana y un puro. Se cargan como imágenes PNG y se superponen sobre la imagen de la cámara. Para colocarlos se calcula su tamaño en función de las dimensiones de la cara o de los hombros. Por ejemplo, el sombrero utiliza como referencia la anchura de la cara, mientras que la bandana se adapta a la distancia entre los hombros. También se tiene en cuenta la inclinación para que los accesorios acompañen el movimiento de la persona.
 
 Para ello se utilizan tres modelos de MediaPipe:
 
@@ -42,18 +42,18 @@ Para ello se utilizan tres modelos de MediaPipe:
 - **Pose Landmarker:** obtiene los puntos del cuerpo, principalmente los hombros. Con ellos calculamos la posición, anchura e inclinación de la bandana.
 - **Hand Landmarker:** detecta las manos y permite interactuar con el puro.
 
-La superposición se realiza teniendo en cuenta el canal alfa de las imágenes, de forma que se conserva la transparencia. Además, se recorta el accesorio cuando parte de él queda fuera de los límites del fotograma.
+La superposición se realiza teniendo en cuenta el canal alfa de las imágenes, de forma que se conserva la transparencia. Además, se recorta el accesorio cuando parte de él queda fuera de los límites del fotograma. De esta manera, los accesorios pueden moverse y girar sin que se dibujen fuera de la imagen.
 
 ### Interacción con el puro
 
-El puro comienza colocado junto a la boca. Para recogerlo se utiliza la posición del punto medio entre el pulgar y el índice de la mano detectada. Se calcula la distancia entre ese punto y la posición del puro.
+El puro comienza colocado junto a la boca. Para recogerlo se utiliza la posición del punto medio entre el pulgar y el índice de las manos detectadas. Si se detecta más de una mano, se selecciona la que se encuentra más cerca del puro. A partir de esa posición se calcula la distancia entre la mano y el accesorio.
 
 El comportamiento se controla mediante dos estados:
 
 - **En la boca:** si la mano permanece cerca del puro durante aproximadamente 0,9 segundos, se considera que la persona lo ha cogido y el puro pasa a la mano.
-- **En la mano:** cuando la mano se aleja de la boca y posteriormente vuelve a acercarse, el puro se devuelve a su posición inicial después de aproximadamente 0,3 segundos.
+- **En la mano:** para devolverlo, primero es necesario alejar la mano de la posición inicial. Una vez que se ha alejado lo suficiente, si vuelve a acercarse al puro y permanece cerca durante aproximadamente 0,3 segundos, este regresa a la boca.
 
-De esta forma evitamos que el puro cambie de posición por una detección puntual de la mano.
+Se utilizan dos umbrales de distancia para controlar estos movimientos y evitar que el puro cambie de posición por pequeñas variaciones en la detección de la mano. Así, no basta con que la mano pase puntualmente cerca del accesorio para que se produzca una interacción.
 
 ### Efecto visual
 
@@ -74,20 +74,20 @@ En este prototipo combinamos MediaPipe Hand Landmarker, un detector facial de Op
 
 ### Seguimiento de la mano y dibujo del sable
 
-Utilizamos **MediaPipe Hand Landmarker** para obtener los landmarks de hasta dos manos. Para colocar la empuñadura se calcula una posición aproximada de la palma utilizando la muñeca y el nudillo del dedo corazón.
+Utilizamos **MediaPipe Hand Landmarker** para obtener los landmarks de hasta dos manos. Para colocar la empuñadura se calcula una posición aproximada de la palma utilizando la muñeca y el nudillo del dedo corazón. La distancia entre estos puntos también se utiliza para adaptar el tamaño de la empuñadura a la mano.
 
 Para mantener el seguimiento de la misma mano entre fotogramas, se compara su posición con la del fotograma anterior y se selecciona la detección más cercana.
 
-La orientación del sable se calcula a partir de los nudillos del dedo índice y del meñique. Con sus coordenadas se obtiene un vector tridimensional y se proyecta sobre la imagen para calcular la dirección de la empuñadura y de la hoja.
+La orientación del sable se calcula a partir de los nudillos del dedo índice y del meñique. Con sus coordenadas se obtiene un vector tridimensional y se proyecta sobre la imagen para calcular la dirección de la empuñadura y de la hoja. Al utilizar también la coordenada de profundidad, el movimiento de la mano hacia delante o hacia atrás influye en la orientación proyectada, en lugar de limitar el cálculo a las coordenadas horizontales y verticales. Cuando la proyección no permite obtener una dirección fiable, se conserva el último ángulo válido para evitar cambios bruscos en la orientación.
 
-La empuñadura se dibuja con líneas y círculos de OpenCV, utilizando distintos grosores y colores para representar las partes metálicas y los detalles. La hoja se genera también mediante OpenCV:
+La empuñadura se dibuja con líneas y círculos de OpenCV, utilizando distintos grosores y colores para representar las partes metálicas y los detalles. Su posición, tamaño y orientación se actualizan con el movimiento de la mano. La hoja se genera también mediante OpenCV:
 
 - Se dibuja una línea exterior más gruesa sobre una capa independiente.
 - Se aplica un desenfoque gaussiano para crear el resplandor.
 - Se mezcla esa capa con el fotograma original.
 - Se dibuja encima una línea más estrecha del color del sable y un núcleo blanco.
 
-Así conseguimos el efecto luminoso de la hoja.
+Así conseguimos el efecto luminoso de la hoja. Además, es necesario mencionar que el sable se muestra mientras se detecta una mano y deja de dibujarse cuando se pierde su seguimiento.
 
 ### Detección y clasificación de expresiones faciales
 
@@ -102,7 +102,7 @@ La región facial se recorta, se convierte a escala de grises y después se vuel
 3. Se normaliza utilizando los valores de media y desviación estándar de ImageNet.
 4. Se introduce en ResNet18 y se obtiene la clase con mayor puntuación.
 
-La clasificación se actualiza cada 0,5 segundos para no tener que ejecutar la red en todos los fotogramas.
+La clasificación se actualiza cada 0,5 segundos para no tener que ejecutar la red en todos los fotogramas. Si no se detecta ninguna cara, se conserva la última expresión reconocida y no se modifica el color del sable.
 
 ### Cambio de color del sable
 
@@ -158,7 +158,7 @@ En el conjunto de entrenamiento se aplican transformaciones para variar ligerame
 
 En validación y test no se aplican estas modificaciones aleatorias. Únicamente se redimensionan y normalizan las imágenes.
 
-También se calculan pesos para las clases a partir de la cantidad de imágenes de cada una. Estos pesos se utilizan en la función de pérdida para compensar el desequilibrio del conjunto de datos.
+También se calculan pesos para las clases a partir de la cantidad de imágenes de cada una. Se utiliza la fórmula (N/(C \c * n_i)), donde (N) es el número total de imágenes, (C) el número de clases y (n_i) el número de imágenes de la clase correspondiente. De esta forma, las clases que tienen menos imágenes reciben un peso mayor en la función de pérdida y se compensa parcialmente el desequilibrio del conjunto de datos.
 
 ### ResNet18 y entrenamiento
 
@@ -182,7 +182,7 @@ Se configura un máximo de 10 épocas y se utiliza AdamW con un learning rate de
 
 En la segunda fase descongelamos todas las capas de ResNet18. De esta forma, además de entrenar el clasificador, permitimos que los filtros originales se adapten a las características de las expresiones faciales del dataset.
 
-Se configura un máximo de 40 épocas. Utilizamos dos learning rates: 0,00001 para el backbone y 0,0001 para la cabeza clasificadora.
+Se configura un máximo de 40 épocas. Utilizamos dos learning rates: 0,00001 para el backbone y 0,0001 para la cabeza clasificadora. Se utiliza una tasa menor para el backbone porque sus pesos ya parten de un entrenamiento previo con ImageNet y se busca ajustarlos sin modificar demasiado las características que ya ha aprendido.
 
 En ambas fases se utiliza la pérdida `CrossEntropyLoss` con los pesos de las clases. También se emplean:
 
@@ -190,6 +190,8 @@ En ambas fases se utiliza la pérdida `CrossEntropyLoss` con los pesos de las cl
 - **ReduceLROnPlateau:** reduce el learning rate cuando la pérdida de validación deja de mejorar.
 - **Early Stopping:** detiene el entrenamiento si la pérdida de validación no mejora durante 10 épocas.
 - **Model Checkpoint:** guarda los pesos del modelo que obtiene la mejor pérdida de validación.
+
+Aunque ambos últimos mecanismos utilizan los resultados de validación, tienen funciones distintas: Early Stopping controla cuándo se deja de entrenar, mientras que Model Checkpoint permite recuperar los pesos de la época que obtuvo el mejor resultado, aunque no sea la última.
 
 El entrenamiento utiliza CUDA cuando está disponible, por lo que puede aprovechar la GPU para acelerar el proceso.
 
