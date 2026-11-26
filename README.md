@@ -10,6 +10,26 @@ Los dos prototipos desarrollados son un filtro del Oeste y un sable láser que s
 - [Pablo Llopis Parrilla](@Putrici0)
 - [David González Espino](@002avid)
 
+## Instalación y ejecución
+
+Para preparar el entorno, se deben seguir las instrucciones del [README — Guía Práctica 5](https://github.com/otsedom/otsedom.github.io/blob/main/VC/P5/README.md).
+
+Además, nuestro código necesita instalar algunas librerías adicionales:
+
+```bash
+pip install torch torchvision kagglehub Pillow
+```
+
+Por otra parte, es importante destacar que por una incompatibilidad entre las librerías de mediapipe y tensorflow, fue necesaria la desinstalación de esta última mediante el siguiente comando:
+
+```bash
+pip uninstall tensorflow
+```
+
+El notebook principal es `VC_P5.ipynb`. Tras ejecutar la celda que contiene todos los imports, se puede ejecutar cualquiera de los filtros, aunque las celdas del entrenamiento se deben ejecutar en orden. Los modelos de MediaPipe y ResNet18 necesarios se encuentran incluidos en el repositorio.
+
+Los prototipos utilizan la cámara web. Para cerrar cada ejecución se pulsa `ESC`.
+
 ## Tarea 1. Filtro del Oeste
 
 El primer prototipo consiste en un filtro inspirado en las películas del Oeste. Utilizamos MediaPipe para detectar la cara, las manos y el cuerpo, y así poder colocar los accesorios en la posición correspondiente.
@@ -198,26 +218,6 @@ Se observa que las expresiones **happy** y **surprised** son de las que mejor re
 También destaca la confusión entre `sad` y `neutral`: 292 imágenes de la clase `sad` se clasificaron como `neutral`.
 
 En general, la matriz permite comprobar que el rendimiento no es igual para todas las expresiones y que algunas presentan más dificultades de clasificación que otras.
-
-## Instalación y ejecución
-
-Para preparar el entorno, se deben seguir las instrucciones del [README — Guía Práctica 5](https://github.com/otsedom/otsedom.github.io/blob/main/VC/P5/README.md).
-
-Además, nuestro código necesita instalar algunas librerías adicionales:
-
-```bash
-pip install torch torchvision kagglehub Pillow
-```
-
-Por otra parte, es importante destacar que por una incompatibilidad entre las librerías de mediapipe y tensorflow, fue necesaria la desinstalación de esta última mediante el siguiente comando:
-
-```bash
-pip uninstall tensorflow
-```
-
-El notebook principal es `VC_P5.ipynb`. Tras ejecutar la celda que contiene todos los imports, se puede ejecutar cualquiera de los filtros, aunque las celdas del entrenamiento se deben ejecutar en orden. Los modelos de MediaPipe y ResNet18 necesarios se encuentran incluidos en el repositorio.
-
-Los prototipos utilizan la cámara web. Para cerrar cada ejecución se pulsa `ESC`.
 
 ## Archivos principales del repositorio
 
