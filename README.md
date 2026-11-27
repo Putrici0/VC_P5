@@ -158,7 +158,7 @@ En el conjunto de entrenamiento se aplican transformaciones para variar ligerame
 
 En validación y test no se aplican estas modificaciones aleatorias. Únicamente se redimensionan y normalizan las imágenes.
 
-También se calculan pesos para las clases a partir de la cantidad de imágenes de cada una. Se utiliza la fórmula (N/(C \c * n_i)), donde (N) es el número total de imágenes, (C) el número de clases y (n_i) el número de imágenes de la clase correspondiente. De esta forma, las clases que tienen menos imágenes reciben un peso mayor en la función de pérdida y se compensa parcialmente el desequilibrio del conjunto de datos.
+También se calculan pesos para las clases a partir de la cantidad de imágenes de cada una. Se utiliza la fórmula `N/(C * n_i)`, donde `N` es el número total de imágenes, `C` el número de clases y `n_i` el número de imágenes de la clase correspondiente. De esta forma, las clases que tienen menos imágenes reciben un peso mayor en la función de pérdida y se compensa parcialmente el desequilibrio del conjunto de datos.
 
 ### ResNet18 y entrenamiento
 
@@ -193,7 +193,7 @@ En ambas fases se utiliza la pérdida `CrossEntropyLoss` con los pesos de las cl
 
 Aunque ambos últimos mecanismos utilizan los resultados de validación, tienen funciones distintas: Early Stopping controla cuándo se deja de entrenar, mientras que Model Checkpoint permite recuperar los pesos de la época que obtuvo el mejor resultado, aunque no sea la última.
 
-El entrenamiento utiliza CUDA cuando está disponible, por lo que puede aprovechar la GPU para acelerar el proceso.
+El entrenamiento utiliza CUDA cuando está disponible, por lo que puede aprovechar la GPU para acelerar el proceso. En el caso contrario, se usará la CPU.
 
 ### Evaluación y gráficas
 
@@ -207,7 +207,7 @@ Se generan métricas de evaluación, un informe de clasificación con `precision
 
 En la gráfica de la izquierda se representa el **accuracy** de entrenamiento y validación a lo largo de las épocas. Se observa que ambos mejoran inicialmente, pero sus resultados empiezan a separarse a medida que avanza el entrenamiento. Al final, el accuracy de entrenamiento alcanza aproximadamente el 73 %, mientras que el de validación se queda cerca del 68 %.
 
-En la gráfica de la derecha se representa la **pérdida (loss)** de ambos conjuntos. La pérdida de entrenamiento continúa disminuyendo, mientras que la de validación deja de mejorar claramente y se mantiene alrededor de 0,95. Esta diferencia entre ambas curvas indica que aparecen signos de **sobreajuste**: el modelo sigue aprendiendo las imágenes de entrenamiento, pero no consigue mejorar en la misma medida con imágenes que no ha utilizado para aprender.
+En la gráfica de la derecha se representa la **pérdida (loss)** de ambos conjuntos. La pérdida de entrenamiento continúa disminuyendo, mientras que la de validación deja de mejorar claramente y se mantiene alrededor de 0,95. Esta diferencia entre ambas curvas indica que aparecen signos de **overfitting**: el modelo sigue aprendiendo las imágenes de entrenamiento, pero no consigue mejorar en la misma medida con imágenes que no ha utilizado para aprender.
 
 #### Matriz de confusión
 
