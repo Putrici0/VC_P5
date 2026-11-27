@@ -64,7 +64,9 @@ Una vez colocados los accesorios, aplicamos un filtro a cada fotograma para darl
 - **Viñeteado:** se oscurecen progresivamente las esquinas mediante una máscara gaussiana.
 - **Grano:** se añade ruido aleatorio para simular el aspecto de una película antigua.
 
-El resultado se muestra en tiempo real desde la cámara. Se puede salir pulsando la tecla `ESC`.
+El resultado se muestra en tiempo real desde la cámara. Se puede salir pulsando la tecla `ESC`. Se puede ver en el siguiente gif:
+
+![Filtro del oeste](gifs/oesteF.gif)
 
 ## Tarea 2. Sable láser controlado por la mano y las expresiones faciales
 
@@ -117,7 +119,9 @@ Según la expresión reconocida, se actualiza el color de la hoja. En el código
 
 El modelo reconoce las siete clases del conjunto de datos, aunque en esta versión solo se han asignado colores a esas cuatro expresiones. Cuando se detecta una de ellas, el color del sable se actualiza y se mantiene hasta la siguiente predicción que tenga un color asociado.
 
-El resultado combina el seguimiento de la mano con la clasificación facial: la posición y orientación del sable dependen de la mano, mientras que el color depende de la expresión detectada.
+El resultado combina el seguimiento de la mano con la clasificación facial: la posición y orientación del sable dependen de la mano, mientras que el color depende de la expresión detectada. El resultado se puede observar aquí:
+
+![Filtro de espada láser](gifs/espadaF.gif)
 
 ## Entrenamiento del modelo de expresiones faciales
 
